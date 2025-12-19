@@ -1,6 +1,14 @@
 name: Publish to npm
 
 on:
+  workflow_dispatch:  
+  workflow_run:
+    # workflows: [Tests]
+    # types: [completed]
+    branches:
+      - 'main'
+      - 'release/**'
+      - '!release/**-**'
   release:
     types: [created]
 
@@ -9,8 +17,30 @@ permissions:
   contents: write  # Required to push updated package.json      
 
 jobs:
-  publish:
+  pre-release:
+    name: Publish to npm (branch, workflow_dispatch, workflow_run)
+    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # https://github.com/actions/setup-node/releases/tag/v4.4.0
+        with:
+            node-version: '20'
+            registry-url: 'https://registry.npmjs.org'
+
+      - name: Extract version from release tag
+        id: version
+        run: |
+            echo "brnach only run";
+
+
+  publish:
+    name: Publish to npm (release)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
