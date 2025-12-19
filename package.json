@@ -1,6 +1,6 @@
 {
   "name": "qunabu-hello-world-npm",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Hello World. I'm curious how does npm publishing with CI/CD works",
   "main": "index.js",
   "scripts": {
