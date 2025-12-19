@@ -39,6 +39,7 @@ jobs:
             github_sha_short="${github_sha_hash:0:7}"
             echo $github_sha_short
 
+            npm install -g npm@11.6 # Ensure npm 11.5.1 or later for trusted publishing
             npm version 0.0.0-${github_sha_short} --no-git-tag-version
             npm publish --tag develop 
 
