@@ -3,8 +3,8 @@ name: Publish to npm
 on:
   workflow_dispatch:  
   workflow_run:
-    # workflows: [Tests]
-    # types: [completed]
+    workflows: [Tests]
+    types: [completed]
     branches:
       - 'main'
       - 'release/**'
@@ -19,7 +19,7 @@ permissions:
 jobs:
   pre-release:
     name: Publish to npm (branch, workflow_dispatch, workflow_run)
-    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_run'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
