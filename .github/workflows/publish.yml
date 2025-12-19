@@ -64,11 +64,20 @@ jobs:
         run: |
           npm install -g npm@11.6 # Ensure npm 11.5.1 or later for trusted publishing
           # Check if this release is marked as the latest on GitHub
-          if [[ $IS_LATEST == "true" ]]; then
-            echo "Publishing to latest tag"
-            npm publish --tag latest
-          else
-            echo "Publishing to previous tag"
-            npm publish --tag previous
-          fi
+          # Check if "Set as a pre-release" was set on the GitHub Release
+          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
+            echo "prerelease"
+          else 
+            if [[ $IS_LATEST == "true" ]]; then
+                echo "Publishing to latest tag"
+                npm publish --tag latest
+            else
+                echo "Publishing to previous tag"
+                npm publish --tag previous
+            fi
+          fi 
+
+
+          
+
 
