@@ -66,8 +66,13 @@ jobs:
           # Check if this release is marked as the latest on GitHub
           # Check if "Set as a pre-release" was set on the GitHub Release
           if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
-            echo "prerelease"
+            
+            npm publish --tag prerelease 
+
+            npm deprecate $(jq -r '.name' package.json)@${{ steps.version.outputs.version }} "${{ steps.version.outputs.version }} is pre-release"
+
           else 
+
             if [[ $IS_LATEST == "true" ]]; then
                 echo "Publishing to latest tag"
                 npm publish --tag latest
@@ -75,6 +80,7 @@ jobs:
                 echo "Publishing to previous tag"
                 npm publish --tag previous
             fi
+
           fi 
 
 
