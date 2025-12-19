@@ -69,7 +69,9 @@ jobs:
             
             npm publish --tag prerelease 
 
-            npm deprecate $(jq -r '.name' package.json)@${{ steps.version.outputs.version }} "${{ steps.version.outputs.version }} is pre-release"
+            # NOTE : this is not working yet. https://docs.npmjs.com/trusted-publishers#limitations-and-future-improvements
+            # OIDC authentication is currently limited to the publish operation. Other npm commands such as install, view, or access still require traditional authentication methods. The npm whoami command will not reflect OIDC authentication status since the authentication occurs only during the publish operation.
+            # npm deprecate $(jq -r '.name' package.json)@${{ steps.version.outputs.version }} "${{ steps.version.outputs.version }} is pre-release"
 
           else 
 
