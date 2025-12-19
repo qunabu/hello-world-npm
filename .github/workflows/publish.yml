@@ -19,7 +19,7 @@ permissions:
 jobs:
   pre-release:
     name: Publish to npm (branch, workflow_dispatch, workflow_run)
-    if: github.event_name == 'workflow_run'
+    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,6 +39,8 @@ jobs:
             github_sha_short="${github_sha_hash:0:7}"
             echo $github_sha_short
 
+            npm version 0.0.0-${github_sha_short} --no-git-tag-version
+            npm publish --tag develop 
 
 
   publish:
