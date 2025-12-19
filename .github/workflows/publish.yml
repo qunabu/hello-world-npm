@@ -6,7 +6,7 @@ on:
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read      
+  contents: write  # Required to push updated package.json      
 
 jobs:
   publish:
@@ -38,6 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git add package.json package-lock.json || true
           git commit -m "chore: update package.json version to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push origin HEAD:${GITHUB_REF#refs/heads/} || echo "Nothing to push"
