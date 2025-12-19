@@ -47,30 +47,26 @@ jobs:
           git push origin HEAD:${{ github.event.release.target_commitish }} || echo "Nothing to push"
 
 
-      - name: Get release info
+      - name: Get release info. Check if this release is marked as the latest on GitHub
         id: release
         run: |
-            RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+            RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+            LATEST_RELEASE_TAG=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
+            echo "Latest release name: $LATEST_RELEASE_TAG"
 
-            LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
-
-            echo "Latest release name: $LATEST_RELEASE_NAME"
-
-            if [[ "${latest_tag}" == "${{ github.event.release.tag_name }}" ]]; then
-                echo "This is the latest release"
+            if [[ "${LATEST_RELEASE_TAG}" == "${{ github.event.release.tag_name }}" ]]; then
+                echo "IS_LATEST=true" >> $GITHUB_ENV
             else
-                echo "This is not the latest release"
+                echo "IS_LATEST=false" >> $GITHUB_ENV
             fi
-
 
       - name: Publish to npm
         run: |
           npm install -g npm@11.6 # Ensure npm 11.5.1 or later for trusted publishing
           # Check if this release is marked as the latest on GitHub
-          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
-            npm publish --tag previous
-          else
+          if [[ $IS_LATEST == "true" ]]; then
             npm publish --tag latest
+          else
+            npm publish --tag previous
           fi
 
