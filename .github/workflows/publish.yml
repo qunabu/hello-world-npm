@@ -41,7 +41,10 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git add package.json package-lock.json || true
           git commit -m "chore: update package.json version to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
-          git push origin HEAD:${GITHUB_REF#refs/heads/} || echo "Nothing to push"
+          git fetch origin ${{ github.event.release.target_commitish }}
+          git checkout ${{ github.event.release.target_commitish }}
+          git merge HEAD@{1} --no-edit || true
+          git push origin HEAD:${{ github.event.release.target_commitish }} || echo "Nothing to push"
 
       - name: Publish to npm
         run: |
