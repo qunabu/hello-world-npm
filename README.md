@@ -95,3 +95,7 @@ This project uses **GitHub OpenID Connect (OIDC)** for npm authentication instea
   - When "Set as a pre-release" is selected → published with `prerelease` tag
   - Older releases → published with `previous` tag 
   - Branch `develop`  → published with `develop` tag 
+
+## NPM 
+
+- all tests are published on [package/qunabu-hello-world-npm](https://www.npmjs.com/package/qunabu-hello-world-npm?activeTab=versions) 
