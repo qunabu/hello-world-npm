@@ -35,6 +35,10 @@ jobs:
         id: version
         run: |
             echo "brnach only run";
+            github_sha_hash=${{ github.sha }}
+            github_sha_short=${{ github_sha_hash:0:7 }}
+            echo $github_sha_short
+            echo "${{ github.sha:0:7 }}"
 
 
   publish:
