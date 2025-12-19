@@ -53,11 +53,16 @@ jobs:
             RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/releases/latest")
 
-            LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.name')
-            IS_LATEST=$(echo "$RELEASE_JSON" | jq -r '.prerelease')
+            LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
 
             echo "Latest release name: $LATEST_RELEASE_NAME"
-            echo "Is latest release: $IS_LATEST"    
+
+            if [[ "${latest_tag}" == "${{ github.event.release.tag_name }}" ]]; then
+                echo "This is the latest release"
+            else
+                echo "This is not the latest release"
+            fi
+
 
       - name: Publish to npm
         run: |
