@@ -46,8 +46,26 @@ jobs:
           git merge HEAD@{1} --no-edit || true
           git push origin HEAD:${{ github.event.release.target_commitish }} || echo "Nothing to push"
 
+
+      - name: Get release info
+        id: release
+        run: |
+            RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+
+            LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.name')
+            IS_LATEST=$(echo "$RELEASE_JSON" | jq -r '.prerelease')
+
+            echo "Latest release name: $LATEST_RELEASE_NAME"
+            echo "Is latest release: $IS_LATEST"    
+
       - name: Publish to npm
         run: |
           npm install -g npm@11.6 # Ensure npm 11.5.1 or later for trusted publishing
-          npm publish
+          # Check if this release is marked as the latest on GitHub
+          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
+            npm publish --tag previous
+          else
+            npm publish --tag latest
+          fi
 
